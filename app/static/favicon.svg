@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Releasesmith">
+  <rect width="32" height="32" rx="7" fill="#132030"/>
+  <path d="M8 9h11a6 6 0 0 1 0 12h-5l-6 5z" fill="none" stroke="#bd9121" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M12 13.5h7M12 17.5h4.5" fill="none" stroke="#bd9121" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

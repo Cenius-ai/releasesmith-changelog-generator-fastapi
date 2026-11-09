@@ -1,0 +1,9 @@
+{% extends "composer.html" %}
+{% block title %}{{ page_title }} · {{ product_name }}{% endblock %}
+
+{% block edit_banner %}
+<div class="alert alert--info">
+  Editing <strong>v{{ release.version }}</strong> — saved {{ release.created_at|human_date }}, last updated {{ release.updated_at|timeago }}.
+  Your name, notes and versions stay as they are unless you change them.
+</div>
+{% endblock %}

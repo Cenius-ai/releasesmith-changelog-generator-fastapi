@@ -1,0 +1,11 @@
+<section class="markdown-panel" aria-labelledby="markdown-title">
+  <div class="panel__head">
+    <h2 id="markdown-title">Markdown export</h2>
+    <div class="markdown-panel__actions">
+      <button type="button" class="btn btn--secondary btn--sm" data-copy-target="markdown-source">Copy</button>
+      <a class="btn btn--primary btn--sm" href="/releases/{{ release.id }}/export.md" download>Download .md</a>
+    </div>
+  </div>
+  <pre class="markdown-panel__code" id="markdown-source" tabindex="0">{{ markdown }}</pre>
+  <p class="hint" id="copy-status" role="status"></p>
+</section>

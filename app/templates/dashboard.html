@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Release history · {{ product_name }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="page-head__text">
+    <p class="eyebrow">Dashboard</p>
+    <h1>Release history</h1>
+    <p class="lede">
+      {% if total_releases %}
+        {{ total_releases|pluralise('saved release') }}, newest first.
+      {% else %}
+        No releases saved yet.
+      {% endif %}
+    </p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn btn--primary" href="/releases/new">New release</a>
+  </div>
+</header>
+
+<section class="kpi-strip" aria-label="Changelog totals">
+  <div class="kpi">
+    <span class="kpi__flag">Releases</span>
+    <span class="kpi__value">{{ stats.releases }}</span>
+    <span class="kpi__meta">saved changelogs</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi__flag">Features</span>
+    <span class="kpi__value">{{ stats.features }}</span>
+    <span class="kpi__meta">feat commits shipped</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi__flag">Fixes</span>
+    <span class="kpi__value">{{ stats.fixes }}</span>
+    <span class="kpi__meta">fix commits shipped</span>
+  </div>
+  <div class="kpi kpi--accent">
+    <span class="kpi__flag">Breaking</span>
+    <span class="kpi__value">{{ stats.breaking }}</span>
+    <span class="kpi__meta">major bumps triggered</span>
+  </div>
+</section>
+
+<section class="panel panel--table">
+  <div class="panel__head">
+    <h2>Saved releases</h2>
+    <form class="filter" method="get" action="/dashboard" role="search">
+      <label class="visually-hidden" for="filter-q">Filter by name or version</label>
+      <input id="filter-q" name="q" type="search" value="{{ query }}" placeholder="Filter by name or version">
+      <button class="btn btn--secondary btn--sm" type="submit">Filter</button>
+      {% if query %}<a class="btn btn--ghost btn--sm" href="/dashboard">Clear</a>{% endif %}
+    </form>
+  </div>
+
+  {% if rows %}
+    <div class="table-wrap">
+      <table class="table">
+        <caption class="visually-hidden">Saved releases, newest first</caption>
+        <thead>
+          <tr>
+            <th scope="col">Version</th>
+            <th scope="col">Release</th>
+            <th scope="col">Bump</th>
+            <th scope="col" class="num">Feat / Fix / Break</th>
+            <th scope="col">Saved</th>
+            <th scope="col"><span class="visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody class="stagger">
+          {% for row in rows %}{% include "partials/release_row.html" %}{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% elif query %}
+    <div class="empty">
+      <h3>No releases match “{{ query }}”</h3>
+      <p>Try a different name or version fragment.</p>
+      <a class="btn btn--secondary" href="/dashboard">Clear filter</a>
+    </div>
+  {% else %}
+    <div class="empty">
+      <svg class="empty__art" viewBox="0 0 120 72" width="120" height="72" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="118" height="70" rx="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 5"></rect>
+        <path d="M18 26h44M18 38h62M18 50h30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      <h3>Paste your first commits</h3>
+      <p>Drop a block of conventional-commit messages into the composer and Releasesmith groups them into Breaking Changes, Features and Fixes.</p>
+      <a class="btn btn--primary" href="/releases/new">Open the composer</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

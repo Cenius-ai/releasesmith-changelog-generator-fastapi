@@ -1,0 +1,29 @@
+<tr class="table__row">
+  <td class="table__version" data-label="Version">
+    <a href="/releases/{{ row.release.id }}">v{{ row.release.version }}</a>
+  </td>
+  <td class="table__name" data-label="Release">
+    <a href="/releases/{{ row.release.id }}">{{ row.release.name }}</a>
+    {% if row.release.notes %}
+      <span class="table__note">{{ row.release.notes|truncate(72, true, '…') }}</span>
+    {% endif %}
+  </td>
+  <td data-label="Bump">
+    <span class="badge badge--{{ row.release.bump_level }}">{{ row.release.bump_level }}</span>
+  </td>
+  <td class="num" data-label="Feat / Fix / Break">
+    <span class="counts">
+      <span class="counts__part">{{ row.groups.features|length }}</span>
+      <span class="counts__sep">/</span>
+      <span class="counts__part">{{ row.groups.fixes|length }}</span>
+      <span class="counts__sep">/</span>
+      <span class="counts__part counts__part--breaking">{{ row.groups.breaking|length }}</span>
+    </span>
+  </td>
+  <td class="table__date" data-label="Saved" title="{{ row.release.created_at|human_datetime }}">
+    {{ row.release.created_at|timeago }}
+  </td>
+  <td class="table__actions" data-label="Actions">
+    <a class="btn btn--ghost btn--sm" href="/releases/{{ row.release.id }}/edit">Edit</a>
+  </td>
+</tr>

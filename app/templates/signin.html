@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Sign in · {{ product_name }}{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <div class="auth-card__brand">
+    <svg class="brand__mark" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+      <path d="M4 5.5h9.5a5 5 0 0 1 0 10H9l-5 4.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+      <path d="M8 9.5h6M8 12.5h4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+    </svg>
+    <span class="brand__name">{{ product_name }}</span>
+  </div>
+
+  <h1>Sign in</h1>
+  <p class="lede">Turn a paste of conventional commits into a grouped changelog, a semantic version bump and a Markdown release note.</p>
+
+  {% if error %}
+    <div class="alert alert--error" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" action="/auth/signin" class="stack">
+    <input type="hidden" name="next" value="{{ next_path }}">
+
+    <div class="field">
+      <label for="signin-email">Email</label>
+      <input id="signin-email" name="email" type="email" autocomplete="username"
+             value="{{ email }}" placeholder="you@example.com" required autofocus>
+    </div>
+
+    <div class="field">
+      <label for="signin-password">Password</label>
+      <div class="field__group">
+        <input id="signin-password" name="password" type="password" autocomplete="current-password"
+               placeholder="Your password" required>
+        <button type="button" class="btn btn--ghost btn--sm" data-toggle-password="signin-password"
+                aria-label="Show password" aria-pressed="false">Show</button>
+      </div>
+    </div>
+
+    <button class="btn btn--primary btn--block" type="submit" id="signin-submit" data-busy="Signing in…">Sign in</button>
+  </form>
+
+  <p class="auth-card__alt">No account yet? <a href="/signup">Create one</a></p>
+
+  <div class="demo-card">
+    <p class="demo-card__label">Demo account</p>
+    <p class="demo-card__creds">Demo: cenius@cenius.ai / cenius</p>
+    <form method="post" action="/auth/demo-signin">
+      <input type="submit" class="btn btn--secondary btn--sm btn--block" value="Sign in with the demo account">
+    </form>
+    <p class="demo-card__hint">Seeded with six releases so every screen has real content.</p>
+  </div>
+</div>
+{% endblock %}

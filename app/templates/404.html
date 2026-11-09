@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Page not found · {{ product_name }}{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="empty empty--page">
+    <p class="eyebrow">404</p>
+    <h1>We could not find that page</h1>
+    <p>The release may have been deleted, or the link belongs to another account.</p>
+    <div class="empty__actions">
+      <a class="btn btn--primary" href="/dashboard">Back to the dashboard</a>
+      <a class="btn btn--ghost" href="/releases/new">Start a new release</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

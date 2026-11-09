@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ page_title or 'Releasesmith' }} · {{ product_name }}{% endblock %}</title>
+  <meta name="description" content="Turn conventional-commit messages into a grouped changelog and a semantic version bump.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="{{ 'app' if current_user else 'auth' }}">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  {% if current_user %}{% include "partials/rail.html" %}{% endif %}
+
+  <main id="main" class="main">
+    {% set flash = pop_flash(request) %}
+    {% if flash %}
+      <div class="flash flash--{{ flash.kind }}" role="status">
+        <span class="flash__text">{{ flash.message }}</span>
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="/static/js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<div class="groups">
+  {% for title, key, kind, empty_text in [
+      ('Breaking Changes', 'breaking', 'breaking', 'No breaking changes in this release'),
+      ('Features', 'features', 'feature', 'No features in this release'),
+      ('Fixes', 'fixes', 'fix', 'No fixes in this release')
+  ] %}
+    {% set items = groups|attr(key) %}
+    <section class="group group--{{ kind }}">
+      <h3 class="group__title">
+        <span>{{ title }}</span>
+        <span class="group__count">{{ items|length }}</span>
+      </h3>
+      {% if items %}
+        <ul class="commit-list">
+          {% for commit in items %}
+            <li class="commit">
+              <span class="commit__type">{{ commit.type }}</span>
+              <span class="commit__desc">{{ commit.description }}</span>
+              {% if commit.scope %}<span class="badge badge--scope">{{ commit.scope }}</span>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="group__empty">{{ empty_text }}</p>
+      {% endif %}
+    </section>
+  {% endfor %}
+
+  {% if groups.skipped %}
+    <p class="skipped-note">{{ groups.skipped }} {{ 'subject line' if groups.skipped == 1 else 'subject lines' }} skipped — only feat, fix and breaking changes are grouped.</p>
+  {% endif %}
+</div>

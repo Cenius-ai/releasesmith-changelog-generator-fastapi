@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}v{{ release.version }} · {{ product_name }}{% endblock %}
+
+{% block content %}
+<div class="page">
+  <header class="page-head">
+    <div class="page-head__text">
+      <p class="eyebrow">Release</p>
+      <h1>
+        v{{ release.version }}
+        <span class="badge badge--{{ release.bump_level }}">{{ release.bump_level }}</span>
+      </h1>
+      <p class="lede">{{ release.name }}</p>
+      <p class="meta">
+        v{{ release.previous_version }} → v{{ release.version }}
+        · saved {{ release.created_at|human_date }}
+        {% if release.updated_at and release.updated_at != release.created_at %}· updated {{ release.updated_at|timeago }}{% endif %}
+      </p>
+    </div>
+    <div class="page-head__actions">
+      <a class="btn btn--secondary" href="/releases/{{ release.id }}/edit">Edit release</a>
+      <a class="btn btn--ghost" href="/dashboard">Back to dashboard</a>
+    </div>
+  </header>
+
+  <div class="detail-grid">
+    <div class="detail-grid__main">
+      <section class="panel" aria-labelledby="sections-title">
+        <div class="panel__head">
+          <h2 id="sections-title">Grouped changes</h2>
+          <span class="meta">{{ groups.commit_count|pluralise('grouped commit') }}</span>
+        </div>
+        {% include "partials/groups.html" %}
+      </section>
+
+      <section class="panel" aria-labelledby="notes-title">
+        <div class="panel__head"><h2 id="notes-title">Release notes</h2></div>
+        {% if release.notes %}
+          <p class="prose">{{ release.notes }}</p>
+        {% else %}
+          <p class="group__empty">No notes on this release.</p>
+        {% endif %}
+      </section>
+
+      <details class="danger">
+        <summary>Delete this release</summary>
+        <p>This removes v{{ release.version }} and its saved changelog. It cannot be undone.</p>
+        <form method="post" action="/releases/{{ release.id }}/delete" class="danger__actions" data-guard>
+          <button class="btn btn--destructive" type="submit" data-busy="Deleting…">Delete permanently</button>
+          <a class="btn btn--ghost" href="/releases/{{ release.id }}">Cancel</a>
+        </form>
+      </details>
+    </div>
+
+    <div class="detail-grid__side">
+      {% include "partials/markdown_panel.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

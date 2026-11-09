@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit release' if mode == 'edit' else 'New release' }} · {{ product_name }}{% endblock %}
+
+{% block content %}
+<div class="page">
+  <header class="page-head">
+    <div class="page-head__text">
+      <p class="eyebrow">{{ 'Edit release' if mode == 'edit' else 'Composer' }}</p>
+      <h1>{% if mode == 'edit' %}Edit v{{ release.version }}{% else %}New release{% endif %}</h1>
+      <p class="lede">Paste conventional-commit messages, preview the groups, then save the release or export it as Markdown.</p>
+    </div>
+    <div class="page-head__actions">
+      <a class="btn btn--ghost" href="{% if release %}/releases/{{ release.id }}{% else %}/dashboard{% endif %}">Cancel</a>
+    </div>
+  </header>
+
+  {% block edit_banner %}{% endblock %}
+
+  <form class="composer" method="post" action="/composer/preview" id="composer-form" data-guard>
+    <input type="hidden" name="release_id" value="{% if release %}{{ release.id }}{% endif %}">
+
+    <section class="panel" aria-labelledby="paste-title">
+      <div class="panel__head">
+        <h2 id="paste-title">Paste commits</h2>
+        {% if mode != 'edit' %}<a class="btn btn--ghost btn--sm" href="/composer?example=1">Load example</a>{% endif %}
+      </div>
+
+      <div class="field">
+        <label for="commits">Conventional commits</label>
+        <p class="hint" id="commits-hint">
+          One commit per block, blocks separated by a blank line. A <code>!</code> after the type or a
+          <code>BREAKING CHANGE:</code> footer marks a breaking change.
+        </p>
+        <textarea id="commits" name="commits" rows="15" spellcheck="false" placeholder="feat(api): add token refresh&#10;&#10;fix(ui): stop double submit"
+                  aria-describedby="commits-hint{% if errors.commits %} commits-error{% endif %}"
+                  {% if errors.commits %}aria-invalid="true"{% endif %}>{{ commits }}</textarea>
+        {% if errors.commits %}<p class="field__error" id="commits-error">{{ errors.commits }}</p>{% endif %}
+      </div>
+
+      <div class="composer__foot">
+        <div class="field field--version">
+          <label for="previous_version">Previous version</label>
+          <input id="previous_version" name="previous_version" type="text" inputmode="decimal"
+                 value="{{ previous_version }}" aria-describedby="previous-version-hint"
+                 {% if errors.previous_version %}aria-invalid="true" aria-describedby="previous-version-error"{% endif %}>
+          {% if errors.previous_version %}
+            <p class="field__error" id="previous-version-error">{{ errors.previous_version }}</p>
+          {% else %}
+            <p class="hint" id="previous-version-hint">The version this release follows.</p>
+          {% endif %}
+        </div>
+        <button class="btn btn--secondary" type="submit" data-busy="Parsing…">Preview changelog</button>
+      </div>
+    </section>
+
+    <section class="panel panel--preview" aria-labelledby="preview-title">
+      <div class="panel__head">
+        <h2 id="preview-title">Changelog preview</h2>
+        {% if previewed %}
+          <span class="badge badge--{{ groups.breaking and 'major' or (groups.features and 'minor' or 'patch') }}">
+            {{ groups.breaking and 'major' or (groups.features and 'minor' or 'patch') }} bump
+          </span>
+        {% endif %}
+      </div>
+
+      {% if previewed %}
+        <div class="totals">
+          <span class="totals__item"><span class="kpi__flag">Breaking</span><strong>{{ groups.breaking|length }}</strong></span>
+          <span class="totals__item"><span class="kpi__flag">Features</span><strong>{{ groups.features|length }}</strong></span>
+          <span class="totals__item"><span class="kpi__flag">Fixes</span><strong>{{ groups.fixes|length }}</strong></span>
+        </div>
+
+        {% if suggestion %}
+          <p class="version-note">
+            Next version <strong>v{{ suggestion.version }}</strong>
+            <span class="muted">from v{{ suggestion.previous }} · {{ suggestion.level }} bump</span>
+          </p>
+        {% endif %}
+
+        {% if groups.has_changes %}
+          {% include "partials/groups.html" %}
+        {% else %}
+          <div class="empty empty--inline">
+            <h3>No feat, fix or breaking commits found</h3>
+            <p>Every pasted subject line was skipped. Add a <code>feat:</code> or <code>fix:</code> subject, or mark one with <code>!</code>.</p>
+          </div>
+        {% endif %}
+
+        <div class="save-form">
+          <h2 class="save-form__title">{{ 'Update release' if mode == 'edit' else 'Save this release' }}</h2>
+          <p class="hint">The preview above is exactly what gets saved and exported.</p>
+
+          <div class="grid-2 grid-2--tight">
+            <div class="field">
+              <label for="release-name">Release name</label>
+              <input id="release-name" name="name" type="text" value="{{ name }}" placeholder="Spring cleaning">
+            </div>
+            <div class="field">
+              <label for="release-version">Version to publish</label>
+              <input id="release-version" name="version" type="text" inputmode="decimal" value="{{ version }}"
+                     {% if errors.version %}aria-invalid="true" aria-describedby="version-error"{% endif %}>
+              {% if errors.version %}
+                <p class="field__error" id="version-error">{{ errors.version }}</p>
+              {% else %}
+                <p class="hint">{% if suggestion %}Suggested v{{ suggestion.version }}{% else %}major.minor.patch{% endif %} — edit to override.</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="release-notes">Release notes <span class="optional">optional</span></label>
+            <textarea id="release-notes" name="notes" rows="3" placeholder="Highlights for people reading the release note">{{ notes }}</textarea>
+          </div>
+
+          <button class="btn btn--primary" type="submit"
+                  formaction="{% if release %}/releases/{{ release.id }}{% else %}/releases{% endif %}"
+                  data-busy="Saving…">
+            {{ 'Update release' if mode == 'edit' else 'Save release' }}
+          </button>
+        </div>
+      {% else %}
+        <div class="empty empty--inline">
+          <h3>Nothing previewed yet</h3>
+          <p>Paste commit blocks on the left and choose <strong>Preview changelog</strong>. The grouped sections and a suggested version bump appear here, with the save form.</p>
+        </div>
+      {% endif %}
+    </section>
+  </form>
+</div>
+{% endblock %}
