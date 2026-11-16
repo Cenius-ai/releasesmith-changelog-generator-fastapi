@@ -25,7 +25,7 @@ _Local clone? See [Quick start](#quick-start) below. cenius.ai is the zero-setup
 
 ## Architecture
 
-No external services required: the entire web application runs from this FastAPI repo (67 files). Top-level layout: `app/`, `tests/`. Starting up is just `./install.sh`: it installs what is needed and pre-fills the database so you have data to work with straight away. Installation walkthrough: [`INSTALL.md`](INSTALL.md).
+No external services required: the entire web application runs from this FastAPI repo (54 files). Top-level layout: `app/`, `tests/`. Starting up is just `./install.sh`: it installs what is needed and pre-fills the database so you have data to work with straight away. Installation walkthrough: [`INSTALL.md`](INSTALL.md).
 
 ## Features
 
